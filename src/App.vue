@@ -1,21 +1,32 @@
 <script setup>
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
-import HelloWorld from './components/HelloWorld.vue'
+import { ref } from '@vue/reactivity'
+import BaseHeader from './components/BaseHeader.vue'
+import ListVideos from './components/ListVideos.vue'
+import CategoriesList from './components/CategoriesList.vue'
+import videosData from './assets/videos.json'
+import categoriesData from './assets/categories.json'
+
+const originalVideos = videosData.data
+let filteredVideos = ref(originalVideos)
+const categories = categoriesData.data
+
+const selectVideosWithCategory = categoryId => {
+  if (!categoryId) {
+    filteredVideos.value = originalVideos
+    return
+  }
+
+  filteredVideos.value = originalVideos.filter(
+    video => video.category === categoryId
+  )
+}
 </script>
 
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Hello Vue 3 + Vite" />
+  <BaseHeader />
+  <CategoriesList
+    :categories="categories"
+    @select-category="selectVideosWithCategory"
+  />
+  <ListVideos :videos="filteredVideos" />
 </template>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
